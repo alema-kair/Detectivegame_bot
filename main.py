@@ -64,15 +64,15 @@ def callback_query(call):
         else:
             # Если все улики собраны, даем список подозреваемых
             markup = types.InlineKeyboardMarkup()
-            markup.add(types.InlineKeyboardButton("👤 Актер-школьник", callback_data="sus_actor"))
-            markup.add(types.InlineKeyboardButton("👤 Подозрительная новенькая", callback_data="sus_newbie"))
-            markup.add(types.InlineKeyboardButton("🛠 Техник сцены", callback_data="sus_tech"))
+            markup.add(types.InlineKeyboardButton("👤 Актриса-школьница Аружан ", callback_data="sus_actor"))
+            markup.add(types.InlineKeyboardButton("👤 Подозрительная новенькая Балнур", callback_data="sus_newbie"))
+            markup.add(types.InlineKeyboardButton("🛠 Техник сцены Канат", callback_data="sus_tech"))
             
             bot.send_message(user_id, "🔍 У вас достаточно улик! Кто по-вашему виноват?", reply_markup=markup)
 
     # Логика обвинения
     elif call.data == "sus_actor":
-        bot.send_message(user_id, "❌ НЕВЕРНО.\nАктер был на сцене во время мигания света. Он не мог установить таймер.")
+        bot.send_message(user_id, "❌ НЕВЕРНО.\nАктриса была на сцене во время мигания света. Она не могла установить таймер.")
     
     elif call.data == "sus_newbie":
         bot.send_message(user_id, "❌ НЕВЕРНО.\nНовенькая даже не знает, где находится аппаратная. Маска ей велика.")
