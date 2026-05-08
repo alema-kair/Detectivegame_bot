@@ -120,3 +120,11 @@ def handle_query(call):
         
         if clue_names[item] not in players[user_id]["clues"]:
             players[user_id]["clues"].append(clue_names[item]) 
+
+            if os.path.exists(full_path):
+                with open(full_path, 'rb') as photo:
+                    bot.send_photo(user_id, photo, caption=f"✅ Найдена улика: *{clue_names[item]}*", parse_mode="Markdown")
+            else:
+                bot.send_message(user_id, f"✅ Найдена улика: *{clue_names[item]}*\n(Картинка не найдена в папке)")
+        
+        show_main_menu(user_id)
