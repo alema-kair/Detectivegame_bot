@@ -90,4 +90,13 @@ def handle_query(call):
             prefix = "✅ " if key in players[user_id]["interrogated"] else "👤 "
             markup.add(types.InlineKeyboardButton(f"{prefix}{s.name}", callback_data=f"talk1_{key}"))
         bot.send_message(user_id, "Кого опросим?", reply_markup=markup)
-
+ elif call.data.startswith("talk1_"):
+        s_key = call.data.split("_")[1]
+        if s_key not in players[user_id]["interrogated"]:
+            players[user_id]["interrogated"].append(s_key)
+            if len(players[user_id]["interrogated"]) == 5:
+                bot.send_message(user_id, "📢 *Вы опросили всех подозреваемых! Теперь вам доступны локации для осмотра.*", parse_mode="Markdown")
+        
+        s = suspects[s_key]
+        bot.send_message(user_id, f"👤 *{s.name}\n\nОблик:* {s.info}\n*Алиби:* \"{s.alibi}\"", parse_mode="Markdown")
+        show_main_menu(user_id)
