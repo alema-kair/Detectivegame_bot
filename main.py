@@ -1,12 +1,16 @@
+# Import libraries for Telegram bot
 import telebot
 from telebot import types
 import os
 
+# Telegram bot token from BotFather
 TOKEN = "8719751151:AAFOeY77gn_Fu006sgdM4TSc30oUWTztdRk"
 bot = telebot.TeleBot(TOKEN)
 
+# Dictionary for storing player data
 players = {}
 
+# Class with a suspect in the game
 class Suspect:
     def __init__(self, name, role, alibi, info, second_round, is_guilty, final_truth):
         self.name = name
