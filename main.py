@@ -22,7 +22,7 @@ class Suspect:
         self.final_truth = final_truth
 
    
-# Возвращаем всех персонажей и их секреты в конце
+# Dictionary containing all suspects
 suspects = {
     "kanat": Suspect("Канат", "Техник", "Был в подсобке один, чинил проводку. Никого не видел.", 
                      "🛠️ Хмурый мужчина в рабочем комбинезоне, от него пахнет машинным маслом.", 
@@ -61,3 +61,12 @@ intro = (
     )
     bot.send_message(user_id, intro, parse_mode="Markdown")
     bot.register_next_step_handler(message, save_name)
+
+def save_name(message):
+    user_id = message.chat.id
+    players[user_id]["name"] = message.text
+    show_main_menu(user_id)
+
+def show_main_menu(user_id):
+    markup = types.InlineKeyboardMarkup()
+    markup.add(types.InlineKeyboardButton("🤝 Опрос подозреваемых", callback_data="round1"))
