@@ -1,16 +1,22 @@
 import telebot
 from telebot import types
+import os
 
 TOKEN = "8719751151:AAFOeY77gn_Fu006sgdM4TSc30oUWTztdRk"
 bot = telebot.TeleBot(TOKEN)
 
-player_clues = {}
+players = {}
 
-# ---------- START ----------
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.chat.id
-    player_clues[user_id] = []
+class Suspect:
+    def __init__(self, name, role, alibi, info, second_round, is_guilty, final_truth):
+        self.name = name
+        self.role = role
+        self.alibi = alibi
+        self.info = info
+        self.second_round = second_round
+        self.is_guilty = is_guilty
+        self.final_truth = final_truth
+
     
     # Кнопки в самом чате (Inline)
     markup = types.InlineKeyboardMarkup()
