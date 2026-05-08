@@ -47,5 +47,5 @@ The player:
 
 -Alema: game logic and interface
 
--Akzhan: bot integration and story desighn
+-Akzhan: bot integration and story design
 
