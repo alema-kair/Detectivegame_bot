@@ -70,3 +70,9 @@ def save_name(message):
 def show_main_menu(user_id):
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("🤝 Опрос подозреваемых", callback_data="round1"))
+ if len(players[user_id]["interrogated"]) >= 5:
+        markup.add(types.InlineKeyboardButton("🔍 Осмотреть локации", callback_data="search"))
+    
+    if len(players[user_id]["clues"]) >= 3:
+        markup.add(types.InlineKeyboardButton("❓ ПЕРЕКРЕСТНЫЙ ДОПРОС", callback_data="round2"))
+        markup.add(types.InlineKeyboardButton("⚖️ ВЕРДИКТ", callback_data="verdict"))
