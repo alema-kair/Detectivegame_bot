@@ -160,3 +160,9 @@ def handle_query(call):
             bot.send_message(user_id, response, parse_mode="Markdown")
         else:
             bot.send_message(user_id, f"❌ *ОШИБКА!* {s.name} не виноват(а). Пока вы спорили, преступник скрылся!")
+@bot.message_handler(func=lambda message: True)
+def handle_text(message):
+    bot.send_message(message.chat.id, "⚠️ Используйте кнопки меню!")
+
+print("Бот запущен!")
+bot.polling(none_stop=True)
