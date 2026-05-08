@@ -100,3 +100,16 @@ def handle_query(call):
         s = suspects[s_key]
         bot.send_message(user_id, f"👤 *{s.name}\n\nОблик:* {s.info}\n*Алиби:* \"{s.alibi}\"", parse_mode="Markdown")
         show_main_menu(user_id)
+
+  elif call.data == "search":
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton("🎭 Сцена", callback_data="clue_mask"))
+        markup.add(types.InlineKeyboardButton("⚡ Аппаратная", callback_data="clue_timer"))
+        markup.add(types.InlineKeyboardButton("💄 Гримерка", callback_data="clue_letter"))
+        bot.edit_message_text("Где будем искать улики?", user_id, call.message.message_id, reply_markup=markup)
+
+    elif call.data.startswith("clue_"):
+        item = call.data.split("_")[1]
+        clue_names = {"mask": "Маска", "timer": "Таймер", "letter": "Записка"}
+        file_name = f"{item}.jpg"
+        
