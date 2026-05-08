@@ -128,3 +128,14 @@ def handle_query(call):
                 bot.send_message(user_id, f"✅ Найдена улика: *{clue_names[item]}*\n(Картинка не найдена в папке)")
         
         show_main_menu(user_id)
+ elif call.data == "round2":
+        markup = types.InlineKeyboardMarkup()
+        for key, s in suspects.items():
+            markup.add(types.InlineKeyboardButton(f"Допросить {s.name}", callback_data=f"talk2_{key}"))
+        bot.send_message(user_id, "Второй раунд. Поймайте их на лжи!", reply_markup=markup)
+
+    elif call.data.startswith("talk2_"):
+        s_key = call.data.split("_")[1]
+        s = suspects[s_key]
+        bot.send_message(user_id, s.second_round, parse_mode="Markdown")
+        show_main_menu(user_id)
