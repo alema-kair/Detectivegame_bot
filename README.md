@@ -46,5 +46,6 @@ The player:
 ## Team Members
 
 -Alema: game logic and interface
+
 -Akzhan: bot integration and story desighn
 
