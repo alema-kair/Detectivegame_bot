@@ -70,9 +70,24 @@ def save_name(message):
 def show_main_menu(user_id):
     markup = types.InlineKeyboardMarkup()
     markup.add(types.InlineKeyboardButton("🤝 Опрос подозреваемых", callback_data="round1"))
+    
  if len(players[user_id]["interrogated"]) >= 5:
         markup.add(types.InlineKeyboardButton("🔍 Осмотреть локации", callback_data="search"))
     
     if len(players[user_id]["clues"]) >= 3:
         markup.add(types.InlineKeyboardButton("❓ ПЕРЕКРЕСТНЫЙ ДОПРОС", callback_data="round2"))
         markup.add(types.InlineKeyboardButton("⚖️ ВЕРДИКТ", callback_data="verdict"))
+bot.send_message(user_id, f"Детектив {players[user_id]['name']}, ваше действие:", reply_markup=markup, parse_mode="Markdown")
+
+@bot.callback_query_handler(func=lambda call: True)
+def handle_query(call):
+    user_id = call.message.chat.id
+    if user_id not in players: return
+
+    if call.data == "round1":
+        markup = types.InlineKeyboardMarkup()
+        for key, s in suspects.items():
+            prefix = "✅ " if key in players[user_id]["interrogated"] else "👤 "
+            markup.add(types.InlineKeyboardButton(f"{prefix}{s.name}", callback_data=f"talk1_{key}"))
+        bot.send_message(user_id, "Кого опросим?", reply_markup=markup)
+
