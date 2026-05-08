@@ -112,4 +112,11 @@ def handle_query(call):
         item = call.data.split("_")[1]
         clue_names = {"mask": "Маска", "timer": "Таймер", "letter": "Записка"}
         file_name = f"{item}.jpg"
+       # Умный поиск пути (ищет в папке проекта)
+        base_dir = os.path.join(os.getcwd(), "Downloads", "detective_bot")
+        full_path = os.path.join(base_dir, file_name)
+        if not os.path.exists(full_path):
+             full_path = os.path.join(os.getcwd(), file_name)
         
+        if clue_names[item] not in players[user_id]["clues"]:
+            players[user_id]["clues"].append(clue_names[item]) 
