@@ -139,3 +139,24 @@ def handle_query(call):
         s = suspects[s_key]
         bot.send_message(user_id, s.second_round, parse_mode="Markdown")
         show_main_menu(user_id)
+
+
+    elif call.data == "verdict":
+        markup = types.InlineKeyboardMarkup()
+        for key, s in suspects.items():
+            markup.add(types.InlineKeyboardButton(f"Обвинить: {s.name}", callback_data=f"final_{key}"))
+        bot.send_message(user_id, "Кто виновен?", reply_markup=markup)
+
+    elif call.data.startswith("final_"):
+        s_key = call.data.split("_")[1]
+        s = suspects[s_key]
+        if s.is_guilty:
+            # Выводим победу и ВСЕ признания
+            response = f"✅ *ПОБЕДА! Это {s.name}!*\n\n{s.final_truth}\n\n"
+            response += "*А вот почему врали остальные:*\n"
+            for k, other in suspects.items():
+                if k != s_key:
+                    response += f"🔹 *{other.name}*: {other.final_truth}\n"
+            bot.send_message(user_id, response, parse_mode="Markdown")
+        else:
+            bot.send_message(user_id, f"❌ *ОШИБКА!* {s.name} не виноват(а). Пока вы спорили, преступник скрылся!")
