@@ -71,16 +71,17 @@ def start(message):
     players[user_id] = {"clues": [], "interrogated": [], "round2": []}
     
 intro = (
-        "🕒 *08:00 AM*\n\n"
-        "*УТРО ПЕРЕД СПЕКТАКЛЕМ*\n"
-        "Этот день начался с настоящего хаоса в актовом зале. Вечером должен был состояться очень важный спектакль, "
-        "но кто-то пробрался ночью в школу и устроил саботаж. Директор в ярости! Свет постоянно мигал и выключался, "
-        "и были найдены несколько записок с угрожающими посланиями. Многие дети напуганы и утверждают, что видели привидение в маске.\n\n"
-        "Руководство школы пригласило вас, чтобы найти виновного до начала спектакля.\n\n"
-        "🕵️‍♂️ *Как ваше имя, Детектив?*"
+        "🎭 **THE MORNING BEFORE THE PERFORMANCE**\n\n"
+        "This day began with a real chaos in the assembly hall. A very important performance was supposed to take place in the evening, "
+        "but someone sneaked into the school at night and sabotaged it. The director is furious! "
+        "The lights were constantly flashing on and off and several notes with threatening messages were found. "
+        "Many children are scared and claim to have seen a ghost in a mask. "
+        "The school management invited you to find the culprit before the performance begins. "
+        "You have until the evening, five suspects and three locations.\n\n"
+        "👤 **What is your name, Detective?**"
     )
     bot.send_message(user_id, intro, parse_mode="Markdown")
-    bot.register_next_step_handler(message, save_name)
+    bot.register_next_step_handler(message, lambda m: save_name(m))
 
 def save_name(message):
     user_id = message.chat.id
