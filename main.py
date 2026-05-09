@@ -189,5 +189,5 @@ def handle_query(call):
         else:
             bot.send_message(user_id, "❌ *WRONG!* The culprit managed to escape while you were accusing the innocent! Try again.")
 
-print("Бот запущен!")
+print("Bot started...")
 bot.polling(none_stop=True)
