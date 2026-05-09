@@ -47,6 +47,7 @@ suspects = {
         "I was in the dressing room, preparing tools for the actors.",
         "🕵️ Detective: FaceID is confirmed. What exactly were you doing?\n\n🎨 Azhar: I was organizing my makeup kits and preparing the costumes!", 
         False, "Azhar was not lying. She just found the note ."),
+    
     "balnur": Suspect("Balnur", "New Girl", 
         "🎒 A girl in a school uniform with a huge backpack.",
         "I'm Balnur, I'm new here. I arrived at 7:30 AM (FaceID confirmed). Ms. Aidana asked me to come early.",
@@ -90,15 +91,16 @@ def save_name(message):
 
 def show_main_menu(user_id):
     markup = types.InlineKeyboardMarkup()
-    markup.add(types.InlineKeyboardButton("🤝 Опрос подозреваемых", callback_data="round1"))
-    
- if len(players[user_id]["interrogated"]) >= 5:
-        markup.add(types.InlineKeyboardButton("🔍 Осмотреть локации", callback_data="search"))
-    
-    if len(players[user_id]["clues"]) >= 3:
-        markup.add(types.InlineKeyboardButton("❓ ПЕРЕКРЕСТНЫЙ ДОПРОС", callback_data="round2"))
-        markup.add(types.InlineKeyboardButton("⚖️ ВЕРДИКТ", callback_data="verdict"))
-bot.send_message(user_id, f"Детектив {players[user_id]['name']}, ваше действие:", reply_markup=markup, parse_mode="Markdown")
+    p = players[user_id]
+    if len(p["interrogated"]) < 5:
+        markup.add(types.InlineKeyboardButton("👤 Step 1: Interviews", callback_data="round1"))
+    elif len(p["clues"]) < 3:
+        markup.add(types.InlineKeyboardButton("🔍 Step 2: Search Clues", callback_data="search"))
+    elif len(p["round2"]) < 5:
+        markup.add(types.InlineKeyboardButton("❓ Step 3: Second Interrogation", callback_data="round2"))
+    else:
+        markup.add(types.InlineKeyboardButton("⚖️ Step 4: Final Verdict", callback_data="verdict"))
+    bot.send_message(user_id, f"Detective {p.get('name', 'Detective')}, current phase:", reply_markup=markup)
 
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
