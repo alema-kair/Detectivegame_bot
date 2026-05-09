@@ -47,20 +47,29 @@ suspects = {
         "I was in the dressing room, preparing tools for the actors.",
         "🕵️ Detective: FaceID is confirmed. What exactly were you doing?\n\n🎨 Azhar: I was organizing my makeup kits and preparing the costumes!", 
         False, "Azhar was not lying. She just found the note ."),
-    "azhar": Suspect("Ажар", "Гример", "Я была в гримёрке, Аружан пришла ко мне сразу.", 
-                     "🎨 Веселая девушка, все руки в пятнах от яркого грима и блестках.", 
-                     "🕵️ Детектив: Аружан пришла позже. Вы её выгораживаете?\n🎨 Ажар: Ну... я не смотрела на часы!", False, 
-                     "Ажар врала про время прихода Аружан только для того, чтобы прикрыть свою лучшую подругу перед учителями."),
-    "aidana": Suspect("Айдана", "Учитель", "У меня был урок истории в 9 'Б'.", 
-                      "📚 Строгая женщина в очках, держит в руках толстый журнал успеваемости.", 
-                      "🕵️ Детектив: Девочки говорят, уроки отменили. Какой урок вы вели?\n📚 Айдана: Это был факультатив!", False, 
-                      "Айдана на самом деле сидела в учительской и спокойно пила чай, пока дети были предоставлены сами себе, но статус строгого учителя не позволял ей в этом признаться.")
+    "balnur": Suspect("Balnur", "New Girl", 
+        "🎒 A girl in a school uniform with a huge backpack.",
+        "I'm Balnur, I'm new here. I arrived at 7:30 AM (FaceID confirmed). Ms. Aidana asked me to come early.",
+        "I saw the figure of the person in the mask and also light was flashing.",
+        "I arrived just seconds before. I saw everything and I was the first to pick up the mask.",
+        "🕵️ Detective: Why did you decide to take the mask in your hands?\n\n🏃‍♀️ Balnur: I decided to run after him and found the mask on the road!", 
+        False, "Balnur was confused and found the mask while trying to catch the stranger."),
+
+    "aidana": Suspect("Aidana", "Teacher", 
+        "👩‍🏫 A strict woman in glasses, holding a gradebook.",
+        "I am Aidana, the teacher in charge. I arrived at 7:50 AM.",
+        "I didn't notice anything unusual before that. The school was quiet.",
+        "I went straight to the assembly hall at 8:00 AM and saw what happened myself!",
+        "🕵️ Detective: Why did you lie that you were there and controlled everything?\n\n☕️ Aidana: I didn't want the Principal to think I left the students unsupervised while I was in the staff room!", 
+        False, "Aidana was embarrassed that she was drinking tea in the staff room during the incident.")
 }
 
+# 3. GAME LOGIC
 @bot.message_handler(commands=['start'])
 def start(message):
     user_id = message.chat.id
-    players[user_id] = {"name": "Детектив", "clues": [], "interrogated": []}
+    players[user_id] = {"clues": [], "interrogated": [], "round2": []}
+    
 intro = (
         "🕒 *08:00 AM*\n\n"
         "*УТРО ПЕРЕД СПЕКТАКЛЕМ*\n"
