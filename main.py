@@ -21,20 +21,32 @@ class Suspect:
         self.second_round, self.is_guilty, self.final_truth = second_round, is_guilty, final_truth
 
    
-# Dictionary containing all suspects
+# 2. DATABASE (FULL ORIGINAL SCENARIO)
 suspects = {
-    "kanat": Suspect("Канат", "Техник", "Был в подсобке один, чинил проводку. Никого не видел.", 
-                     "🛠️ Хмурый мужчина в рабочем комбинезоне, от него пахнет машинным маслом.", 
-                     "🕵️ Детектив: Канат, в подсобке вас никто не видел, а в пульте найден таймер. Только вы могли его поставить.\n🛠️ Канат: Отстаньте, я просто работал в подвале!", True, 
-                     "Канат сознался: он ненавидит шумные праздники и хотел сорвать спектакль, чтобы уволиться по собственному желанию. Он единственный, кто знал, как настроить таймер в старом пульте."),
-    "aruzhan": Suspect("Аружан", "Актриса", "Я была на сцене всё утро, повторяла роль под софитами.", 
-                       "🎭 Красивая девушка в театральном костюме, выглядит очень бледной и испуганной.", 
-                       "🕵️ Детектив: Аружан, Ажар говорит, что сцена была пуста, когда она заглядывала. Где вы были?\n🎭 Аружан: Может я просто отошла воды попить? Да, точно, я была в коридоре!", False, 
-                       "Аружан на самом деле проспала и пришла в школу на час позже, но боялась признаться в этом учителю Айдане, чтобы её не выгнали из спектакля."),
-    "balnur": Suspect("Балнур", "Новенькая", "Я искала кабинет химии на 3 этаже, честно!", 
-                      "🎒 Девочка в школьной форме с огромным рюкзаком, постоянно смотрит в карту школы.", 
-                      "🕵️ Детектив: Балнур, другие говорят, что химии сегодня нет в расписании. Зачем вы туда шли?\n🎒 Балнур: Ой, я просто перепутала этажи! Я же новенькая!", False, 
-                       "Балнур реально запуталась: в её старой школе химия была на 3 этаже, а в этой — на 1-м. Она не врала, просто ошиблась."),
+    "kanat": Suspect("Kanat", "Technician", 
+        "⚙️ A gloomy man in a work jumpsuit, smelling of machine oil.",
+        "I am Kanat, the technician. I arrived at the start of the working day at 7:00 AM, FaceID can confirm that I arrived on time.",
+        "I haven't seen anything and I haven't heard anything because I wasn't there. FaceID shows I arrived, but I was busy.",
+        "I was in the utility room since 7:00 AM. I saw nothing and heard nothing. No one saw me and no one can confirm it.",
+        "🕵️ Detective: Your FaceID is confirmed, but no one saw you. And this professional timer in the console... only you could do it.\n\n🛠️ Kanat: I was in the basement! Kids don't go there!", 
+        True,
+        "Kanat confessed: He had a major conflict with the school administration. Knowing how important this show was for the school, he decided to ruin everything out of spite."),
+
+    "aruzhan": Suspect("Aruzhan", "Actress", 
+        "🎭 A beautiful girl in a theatrical costume, looking very pale and frightened.",
+        "I'm Aruzhan, the lead actress. I arrived at 8:00 AM and immediately went backstage to rehearse.",
+        "I heard it when it was already happening! I saw the figure of the one who was scaring the students.",
+        "I was on stage, rehearsing my role under the spotlights.",
+        "🕵️ Detective: Your FaceID was not confirmed for 8:00. Why did you lie?\n\n💧 Aruzhan: I was afraid of Aidana! I thought I wouldn't be allowed to play anymore!", 
+        False, "Aruzhan was actually an hour late and lied to avoid trouble with the teacher."),
+
+    "azhar": Suspect("Azhar", "Makeup Artist", 
+        "💄 A girl with brushes, fixing her makeup.",
+        "I arrived at 8:00 AM, FaceID can prove it. I went straight to the dressing room.",
+        "I found a note immediately! I decided not to touch it because it scared me.",
+        "I was in the dressing room, preparing tools for the actors.",
+        "🕵️ Detective: FaceID is confirmed. What exactly were you doing?\n\n🎨 Azhar: I was organizing my makeup kits and preparing the costumes!", 
+        False, "Azhar was not lying. She just found the note ."),
     "azhar": Suspect("Ажар", "Гример", "Я была в гримёрке, Аружан пришла ко мне сразу.", 
                      "🎨 Веселая девушка, все руки в пятнах от яркого грима и блестках.", 
                      "🕵️ Детектив: Аружан пришла позже. Вы её выгораживаете?\n🎨 Ажар: Ну... я не смотрела на часы!", False, 
