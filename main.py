@@ -4,22 +4,21 @@ from telebot import types
 import os
 
 # Telegram bot token from BotFather
-TOKEN = "8719751151:AAFOeY77gn_Fu006sgdM4TSc30oUWTztdRk"
+TOKEN = "8719751151:AAE5mZpZnLKKRe_2lFhWodQN6D2BjQCgN3s"
 bot = telebot.TeleBot(TOKEN)
 
+try: bot.stop_polling()
+except: pass
+    
 # Dictionary for storing player data
 players = {}
 
 # Class with a suspect in the game
 class Suspect:
-    def __init__(self, name, role, alibi, info, second_round, is_guilty, final_truth):
-        self.name = name
-        self.role = role
-        self.alibi = alibi
-        self.info = info
-        self.second_round = second_round
-        self.is_guilty = is_guilty
-        self.final_truth = final_truth
+    def _init_(self, name, role, info, q1, q2, q3, second_round, is_guilty, final_truth):
+        self.name, self.role, self.info = name, role, info
+        self.q1, self.q2, self.q3 = q1, q2, q3
+        self.second_round, self.is_guilty, self.final_truth = second_round, is_guilty, final_truth
 
    
 # Dictionary containing all suspects
