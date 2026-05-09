@@ -113,76 +113,42 @@ def handle_query(call):
             btn_text = f"✅ {s.name}" if k in players[user_id]["interrogated"] else f"👤 {s.name}"
             markup.add(types.InlineKeyboardButton(btn_text, callback_data=f"sel_{k}"))
         bot.send_message(user_id, "Who will you interview?", reply_markup=markup)
- elif call.data.startswith("talk1_"):
-        s_key = call.data.split("_")[1]
-        if s_key not in players[user_id]["interrogated"]:
-            players[user_id]["interrogated"].append(s_key)
-            if len(players[user_id]["interrogated"]) == 5:
-                bot.send_message(user_id, "📢 *Вы опросили всех подозреваемых! Теперь вам доступны локации для осмотра.*", parse_mode="Markdown")
-        
-        s = suspects[s_key]
-        bot.send_message(user_id, f"👤 *{s.name}\n\nОблик:* {s.info}\n*Алиби:* \"{s.alibi}\"", parse_mode="Markdown")
+
+    elif call.data.startswith("sel_"):
+        k = call.data[4:]
+        s = suspects[k]
+        markup = types.InlineKeyboardMarkup()
+        markup.add(types.InlineKeyboardButton("Introduce yourself and arrival time?", callback_data=f"q1_{k}"))
+        markup.add(types.InlineKeyboardButton("Did you hear anything unusual?", callback_data=f"q2_{k}"))
+        markup.add(types.InlineKeyboardButton("Where were you at 8:00 AM?", callback_data=f"q3_{k}"))
+        markup.add(types.InlineKeyboardButton("🔙 Finish", callback_data="back"))
+        bot.edit_message_text(f"Questioning {s.name}...\n{s.info}", user_id, call.message.message_id, reply_markup=markup)
+
+    elif call.data.startswith(("q1_", "q2_", "q3_")):
+        q, k = call.data[:2], call.data[3:]
+        if k not in players[user_id]["interrogated"]: players[user_id]["interrogated"].append(k)
+        bot.send_message(user_id, f"🗣️ *{suspects[k].name}:* {getattr(suspects[k], q)}", parse_mode="Markdown")
+
+    elif call.data == "back":
+        bot.delete_message(user_id, call.message.message_id)
         show_main_menu(user_id)
 
-  elif call.data == "search":
+    elif call.data == "search":
         markup = types.InlineKeyboardMarkup()
-        markup.add(types.InlineKeyboardButton("🎭 Сцена", callback_data="clue_mask"))
-        markup.add(types.InlineKeyboardButton("⚡ Аппаратная", callback_data="clue_timer"))
-        markup.add(types.InlineKeyboardButton("💄 Гримерка", callback_data="clue_letter"))
-        bot.edit_message_text("Где будем искать улики?", user_id, call.message.message_id, reply_markup=markup)
+        markup.add(types.InlineKeyboardButton("🎭 Stage", callback_data="clue_mask"),
+                   types.InlineKeyboardButton("⚡️ Booth", callback_data="clue_timer"),
+                   types.InlineKeyboardButton("💄 Room", callback_data="clue_letter"))
+        bot.send_message(user_id, "Search location:", reply_markup=markup)
 
     elif call.data.startswith("clue_"):
-        item = call.data.split("_")[1]
-        clue_names = {"mask": "Маска", "timer": "Таймер", "letter": "Записка"}
-        file_name = f"{item}.jpg"
-       # Умный поиск пути (ищет в папке проекта)
-        base_dir = os.path.join(os.getcwd(), "Downloads", "detective_bot")
-        full_path = os.path.join(base_dir, file_name)
-        if not os.path.exists(full_path):
-             full_path = os.path.join(os.getcwd(), file_name)
+        item = call.data[5:]
+        clue_names = {"mask": "Mask", "timer": "Timer", "letter": "Note"}
+        clue_texts = {
+            "mask": "The mask used to scare children. It's very big. Found by Balnur.",
+            "timer": "A professional timer. It caused the flickering. Expert work.",
+            "letter": "Found by Azhar. Crude handwriting. 'Cancel the play at any cost'."
+        }
         
-        if clue_names[item] not in players[user_id]["clues"]:
-            players[user_id]["clues"].append(clue_names[item]) 
-
-            if os.path.exists(full_path):
-                with open(full_path, 'rb') as photo:
-                    bot.send_photo(user_id, photo, caption=f"✅ Найдена улика: *{clue_names[item]}*", parse_mode="Markdown")
-            else:
-                bot.send_message(user_id, f"✅ Найдена улика: *{clue_names[item]}*\n(Картинка не найдена в папке)")
-        
-        show_main_menu(user_id)
- elif call.data == "round2":
-        markup = types.InlineKeyboardMarkup()
-        for key, s in suspects.items():
-            markup.add(types.InlineKeyboardButton(f"Допросить {s.name}", callback_data=f"talk2_{key}"))
-        bot.send_message(user_id, "Второй раунд. Поймайте их на лжи!", reply_markup=markup)
-
-    elif call.data.startswith("talk2_"):
-        s_key = call.data.split("_")[1]
-        s = suspects[s_key]
-        bot.send_message(user_id, s.second_round, parse_mode="Markdown")
-        show_main_menu(user_id)
-
-
-    elif call.data == "verdict":
-        markup = types.InlineKeyboardMarkup()
-        for key, s in suspects.items():
-            markup.add(types.InlineKeyboardButton(f"Обвинить: {s.name}", callback_data=f"final_{key}"))
-        bot.send_message(user_id, "Кто виновен?", reply_markup=markup)
-
-    elif call.data.startswith("final_"):
-        s_key = call.data.split("_")[1]
-        s = suspects[s_key]
-        if s.is_guilty:
-            # Выводим победу и ВСЕ признания
-            response = f"✅ *ПОБЕДА! Это {s.name}!*\n\n{s.final_truth}\n\n"
-            response += "*А вот почему врали остальные:*\n"
-            for k, other in suspects.items():
-                if k != s_key:
-                    response += f"🔹 *{other.name}*: {other.final_truth}\n"
-            bot.send_message(user_id, response, parse_mode="Markdown")
-        else:
-            bot.send_message(user_id, f"❌ *ОШИБКА!* {s.name} не виноват(а). Пока вы спорили, преступник скрылся!")
 @bot.message_handler(func=lambda message: True)
 def handle_text(message):
     bot.send_message(message.chat.id, "⚠️ Используйте кнопки меню!")
