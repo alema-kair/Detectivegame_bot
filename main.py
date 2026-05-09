@@ -149,9 +149,45 @@ def handle_query(call):
             "letter": "Found by Azhar. Crude handwriting. 'Cancel the play at any cost'."
         }
         
-@bot.message_handler(func=lambda message: True)
-def handle_text(message):
-    bot.send_message(message.chat.id, "⚠️ Используйте кнопки меню!")
+ path = os.path.join(os.path.expanduser("~"), "Downloads", "detective_bot", f"{item}.jpg")
+        
+        if clue_names[item] not in players[user_id]["clues"]: players[user_id]["clues"].append(clue_names[item])
+        
+        if os.path.exists(path):
+            with open(path, 'rb') as f:
+                bot.send_photo(user_id, f, caption=f"✅ Found: {clue_names[item]}\n{clue_texts[item]}")
+        else:
+            bot.send_message(user_id, f"✅ Found: {clue_names[item]}\n{clue_texts[item]}\n\n⚠️ Image {item}.jpg not found.")
+        show_main_menu(user_id)
+
+    elif call.data == "round2":
+        markup = types.InlineKeyboardMarkup()
+        for k, s in suspects.items():
+            btn_text = f"✅ {s.name}" if k in players[user_id]["round2"] else f"👤 {s.name}"
+            markup.add(types.InlineKeyboardButton(btn_text, callback_data=f"t2_{k}"))
+        bot.send_message(user_id, "Second interrogation:", reply_markup=markup)
+
+    elif call.data.startswith("t2_"):
+        k = call.data[3:]
+        if k not in players[user_id]["round2"]: players[user_id]["round2"].append(k)
+        bot.send_message(user_id, suspects[k].second_round, parse_mode="Markdown")
+        show_main_menu(user_id)
+
+    elif call.data == "verdict":
+        markup = types.InlineKeyboardMarkup()
+        for k, s in suspects.items(): markup.add(types.InlineKeyboardButton(f"Accuse: {s.name}", callback_data=f"fin_{k}"))
+        bot.send_message(user_id, "Who is guilty?", reply_markup=markup)
+
+    elif call.data.startswith("fin_"):
+        k = call.data[4:]
+        s = suspects[k]
+        if s.is_guilty:
+            res = f"✅ *SOLVED! It was {s.name}!\n\n{s.final_truth}\n\nOthers:*\n"
+            for other_k, other_s in suspects.items():
+                if other_k != k: res += f"• {other_s.name}: {other_s.final_truth}\n"
+            bot.send_message(user_id, res, parse_mode="Markdown")
+        else:
+            bot.send_message(user_id, "❌ *WRONG!* The culprit managed to escape while you were accusing the innocent! Try again.")
 
 print("Бот запущен!")
 bot.polling(none_stop=True)
