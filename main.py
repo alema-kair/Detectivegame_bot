@@ -109,10 +109,10 @@ def handle_query(call):
 
     if call.data == "round1":
         markup = types.InlineKeyboardMarkup()
-        for key, s in suspects.items():
-            prefix = "✅ " if key in players[user_id]["interrogated"] else "👤 "
-            markup.add(types.InlineKeyboardButton(f"{prefix}{s.name}", callback_data=f"talk1_{key}"))
-        bot.send_message(user_id, "Кого опросим?", reply_markup=markup)
+        for k, s in suspects.items():
+            btn_text = f"✅ {s.name}" if k in players[user_id]["interrogated"] else f"👤 {s.name}"
+            markup.add(types.InlineKeyboardButton(btn_text, callback_data=f"sel_{k}"))
+        bot.send_message(user_id, "Who will you interview?", reply_markup=markup)
  elif call.data.startswith("talk1_"):
         s_key = call.data.split("_")[1]
         if s_key not in players[user_id]["interrogated"]:
