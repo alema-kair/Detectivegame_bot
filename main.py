@@ -19,9 +19,6 @@ class Suspect:
         self.name, self.role, self.info = name, role, info
         self.q1, self.q2, self.q3 = q1, q2, q3
         self.second_round, self.is_guilty, self.final_truth = second_round, is_guilty, final_truth
-
-   
-# 2. DATABASE (FULL ORIGINAL SCENARIO)
 suspects = {
     "kanat": Suspect("Kanat", "Technician", 
         "A gloomy man in a work jumpsuit, smelling of machine oil.",
@@ -46,24 +43,23 @@ suspects = {
         "I was in the dressing room, preparing tools for the actors.",
         "Detective: FaceID is confirmed. What exactly were you doing in the dressing room?\n\nAzhar: I was organizing my makeup kits and preparing the costumes for actors!",
         False, "Azhar was not lying. She just found the note."),
-    
-    "balnur": Suspect("Balnur", "New Girl", 
-        "🎒 A girl in a school uniform with a huge backpack.",
+
+    "balnur": Suspect("Balnur", "New Girl",
+        "A girl in a school uniform with a huge backpack.",
         "I'm Balnur, I'm new here. I arrived at 7:30 AM (FaceID confirmed). Ms. Aidana asked me to come early.",
-        "I saw the figure of the person in the mask and also light was flashing.",
+        "I saw the figure of the person in the mask and also light was flashing. I went to see what was going on there. I noticed the mask when i was going after him.",
         "I arrived just seconds before. I saw everything and I was the first to pick up the mask.",
-        "🕵️ Detective: Why did you decide to take the mask in your hands?\n\n🏃‍♀️ Balnur: I decided to run after him and found the mask on the road!", 
+        "Detective: Why did you decide to take the mask in your hands?\n\nBalnur: I decided to run after him and found the mask on the road as i told you!",
         False, "Balnur was confused and found the mask while trying to catch the stranger."),
 
-    "aidana": Suspect("Aidana", "Teacher", 
-        "👩‍🏫 A strict woman in glasses, holding a gradebook.",
+    "aidana": Suspect("Aidana", "Teacher",
+        "A strict woman in glasses, holding a gradebook.",
         "I am Aidana, the teacher in charge. I arrived at 7:50 AM.",
         "I didn't notice anything unusual before that. The school was quiet.",
         "I went straight to the assembly hall at 8:00 AM and saw what happened myself!",
-        "🕵️ Detective: Why did you lie that you were there and controlled everything?\n\n☕️ Aidana: I didn't want the Principal to think I left the students unsupervised while I was in the staff room!", 
+        "Detective: Why did you lie that you were there and controlled everything?\n\nAidana: I didn't want the Principal to think I left the students unsupervised while I was in the staff room!",
         False, "Aidana was embarrassed that she was drinking tea in the staff room during the incident.")
 }
-
 
 def save_name(message):
     user_id = message.chat.id
@@ -102,13 +98,13 @@ def handle_query(call):
         markup.add(types.InlineKeyboardButton("Introduce yourself and arrival time?", callback_data=f"q1_{k}"))
         markup.add(types.InlineKeyboardButton("Did you hear anything unusual?", callback_data=f"q2_{k}"))
         markup.add(types.InlineKeyboardButton("Where were you at 8:00 AM?", callback_data=f"q3_{k}"))
-        markup.add(types.InlineKeyboardButton("🔙 Finish", callback_data="back"))
+        markup.add(types.InlineKeyboardButton("🔚 Finish", callback_data="back"))
         bot.edit_message_text(f"Questioning {s.name}...\n{s.info}", user_id, call.message.message_id, reply_markup=markup)
 
     elif call.data.startswith(("q1_", "q2_", "q3_")):
         q, k = call.data[:2], call.data[3:]
         if k not in players[user_id]["interrogated"]: players[user_id]["interrogated"].append(k)
-        bot.send_message(user_id, f"🗣️ *{suspects[k].name}:* {getattr(suspects[k], q)}", parse_mode="Markdown")
+        bot.send_message(user_id, f"👤 *{suspects[k].name}:* {getattr(suspects[k], q)}", parse_mode="Markdown")
 
     elif call.data == "back":
         bot.delete_message(user_id, call.message.message_id)
@@ -129,16 +125,14 @@ def handle_query(call):
             "timer": "A professional timer. It caused the flickering. Expert work.",
             "letter": "Found by Azhar. Crude handwriting. 'Cancel the play at any cost'."
         }
-        
- path = os.path.join(os.path.expanduser("~"), "Downloads", "detective_bot", f"{item}.jpg")
-        
-        if clue_names[item] not in players[user_id]["clues"]: players[user_id]["clues"].append(clue_names[item])
-        
+        path = os.path.join(os.path.expanduser("~"), "Downloads", "detective_bot", f"{item}.jpg")
+        if c_names[item] not in players[user_id]["clues"]:
+            players[user_id]["clues"].append(c_names[item])
         if os.path.exists(path):
             with open(path, 'rb') as f:
-                bot.send_photo(user_id, f, caption=f"✅ Found: {clue_names[item]}\n{clue_texts[item]}")
+                bot.send_photo(user_id, f, caption=f"🔍 Found: {c_names[item]}\n{c_texts[item]}")
         else:
-            bot.send_message(user_id, f"✅ Found: {clue_names[item]}\n{clue_texts[item]}\n\n⚠️ Image {item}.jpg not found.")
+            bot.send_message(user_id, f"🔍 Found: {c_names[item]}\n{c_texts[item]}\n\n⚠️ Image {item}.jpg not found.")
         show_main_menu(user_id)
 
     elif call.data == "round2":
@@ -162,13 +156,33 @@ def handle_query(call):
     elif call.data.startswith("fin_"):
         k = call.data[4:]
         s = suspects[k]
+         
         if s.is_guilty:
-            res = f"✅ *SOLVED! It was {s.name}!\n\n{s.final_truth}\n\nOthers:*\n"
+            res = f"✅ *SOLVED! It was {s.name}! \n\n {s.final_truth} \n\n Others:* \n"
             for other_k, other_s in suspects.items():
-                if other_k != k: res += f"• {other_s.name}: {other_s.final_truth}\n"
+                if other_k != k:
+                    res += f" {other_s.name}: {other_s.final_truth} \n"
             bot.send_message(user_id, res, parse_mode="Markdown")
         else:
             bot.send_message(user_id, "❌ *WRONG!* The culprit managed to escape while you were accusing the innocent! Try again.")
+
+@bot.message_handler(commands=['start'])
+def start(message):
+    user_id = message.chat.id
+    players[user_id] = {"clues": [], "interrogated": [], "round2": []}
+    
+    intro = (
+        "**THE MORNING BEFORE THE PERFORMANCE**\n\n"
+        "This day began with a real chaos in the assembly hall. A very important performance was supposed to take place in the evening, "
+        "but someone sneaked into the school at night and sabotaged it. The director is furious! \n"
+        "The lights were constantly flashing on and off and several notes with threatening messages were found. \n"
+        "Many children are scared and claim to have seen a ghost in a mask. \n"
+        "The school management invited you to find the culprit before the performance begins. \n"
+        "You have until the evening, five suspects and three locations.\n\n"
+        "👤 **What is your name, Detective?**"
+    )
+    bot.send_message(user_id, intro, parse_mode="Markdown")
+    bot.register_next_step_handler(message, save_name)
 
 print("Bot started...")
 bot.polling(none_stop=True)
