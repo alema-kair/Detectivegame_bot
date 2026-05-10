@@ -4,7 +4,7 @@ from telebot import types
 import os
 
 # Telegram bot token from BotFather
-TOKEN = "8719751151:AAE5mZpZnLKKRe_2lFhWodQN6D2BjQCgN3s"
+TOKEN = "8719751151:AAG0B0YyKm45lp6iYXY1mrNnFkUu5d9rIMY"
 bot = telebot.TeleBot(TOKEN)
 
 try: bot.stop_polling()
