@@ -30,26 +30,3 @@ This project is an interactive detective game Telegram bot created with Visual S
 4. Run the bot:
 "python main.py"
 
-## Gameplay
-
-The player:
-1. Investigates locations
-2. Collects clues
-3. Talks to suspects
-4. Unlocks the second interrogation round
-5. Makes the final accusation
-
-## Example Clues
-
--Mask
-
--Timer
-
--Note
-
-## Team Members
-
--Alema: game logic and interface
-
--Akzhan: bot integration and story design
-
