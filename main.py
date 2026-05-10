@@ -64,24 +64,6 @@ suspects = {
         False, "Aidana was embarrassed that she was drinking tea in the staff room during the incident.")
 }
 
-# 3. GAME LOGIC
-@bot.message_handler(commands=['start'])
-def start(message):
-    user_id = message.chat.id
-    players[user_id] = {"clues": [], "interrogated": [], "round2": []}
-    
-intro = (
-        "🎭 **THE MORNING BEFORE THE PERFORMANCE**\n\n"
-        "This day began with a real chaos in the assembly hall. A very important performance was supposed to take place in the evening, "
-        "but someone sneaked into the school at night and sabotaged it. The director is furious! "
-        "The lights were constantly flashing on and off and several notes with threatening messages were found. "
-        "Many children are scared and claim to have seen a ghost in a mask. "
-        "The school management invited you to find the culprit before the performance begins. "
-        "You have until the evening, five suspects and three locations.\n\n"
-        "👤 **What is your name, Detective?**"
-    )
-    bot.send_message(user_id, intro, parse_mode="Markdown")
-    bot.register_next_step_handler(message, lambda m: save_name(m))
 
 def save_name(message):
     user_id = message.chat.id
