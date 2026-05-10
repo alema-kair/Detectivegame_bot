@@ -10,9 +10,11 @@ This project is an interactive detective game Telegram bot created with Visual S
 
 -Clue collection system
 
--Multiple suspects
+-Multiple endings
 
--Different endings
+-Suspect Interrogation
+
+-Error handling
 
 ## Technologies Used
 -Visual Studio Code
