@@ -7,13 +7,18 @@ This project is an interactive detective game Telegram bot created with Visual S
 ## Features
 
 -Interactive buttons
+
 -Clue collection system
+
 -Multiple suspects
+
 -Different endings
 
 ## Technologies Used
 -Visual Studio Code
+
 -Python
+
 -Telegram Bot API
 
 ## How to Run
@@ -40,7 +45,9 @@ The player:
 ## Example Clues
 
 -Mask
+
 -Timer
+
 -Note
 
 ## Team Members
