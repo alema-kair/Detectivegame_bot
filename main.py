@@ -21,6 +21,7 @@ class Suspect:
         self.name, self.role, self.info = name, role, info
         self.q1, self.q2, self.q3 = q1, q2, q3
         self.second_round, self.is_guilty, self.final_truth = second_round, is_guilty, final_truth
+# Dictionary containing all suspects
 suspects = {
     "kanat": Suspect("Kanat", "Technician", 
         "A gloomy man in a work jumpsuit, smelling of machine oil.",
@@ -63,11 +64,13 @@ suspects = {
         False, "Aidana was embarrassed that she was drinking tea in the staff room during the incident.")
 }
 
+# Function for saving the player's name
 def save_name(message):
     user_id = message.chat.id
     players[user_id]["name"] = message.text
     show_main_menu(user_id)
 
+# Function for displaying the main menu
 def show_main_menu(user_id):
     markup = types.InlineKeyboardMarkup()
     p = players[user_id]
@@ -81,6 +84,7 @@ def show_main_menu(user_id):
         markup.add(types.InlineKeyboardButton("⚖️ Step 4: Final Verdict", callback_data="verdict"))
     bot.send_message(user_id, f"Detective {p.get('name', 'Detective')}, current phase:", reply_markup=markup)
 
+# Handler for processing button clicks
 @bot.callback_query_handler(func=lambda call: True)
 def handle_query(call):
     user_id = call.message.chat.id
@@ -93,6 +97,7 @@ def handle_query(call):
             markup.add(types.InlineKeyboardButton(btn_text, callback_data=f"sel_{k}"))
         bot.send_message(user_id, "Who will you interview?", reply_markup=markup)
 
+     # Checking if a suspect was selected
     elif call.data.startswith("sel_"):
         k = call.data[4:]
         s = suspects[k]
@@ -102,16 +107,19 @@ def handle_query(call):
         markup.add(types.InlineKeyboardButton("Where were you at 8:00 AM?", callback_data=f"q3_{k}"))
         markup.add(types.InlineKeyboardButton("🔚 Finish", callback_data="back"))
         bot.edit_message_text(f"Questioning {s.name}...\n{s.info}", user_id, call.message.message_id, reply_markup=markup)
-
+    
+     # Checking if one of the questions was pressed
     elif call.data.startswith(("q1_", "q2_", "q3_")):
         q, k = call.data[:2], call.data[3:]
         if k not in players[user_id]["interrogated"]: players[user_id]["interrogated"].append(k)
         bot.send_message(user_id, f"👤 *{suspects[k].name}:* {getattr(suspects[k], q)}", parse_mode="Markdown")
 
+     # Returning back to the menu
     elif call.data == "back":
         bot.delete_message(user_id, call.message.message_id)
         show_main_menu(user_id)
 
+     # Clue searching stage
     elif call.data == "search":
         markup = types.InlineKeyboardMarkup()
         markup.add(types.InlineKeyboardButton("🎭 Stage", callback_data="clue_mask"),
@@ -119,6 +127,7 @@ def handle_query(call):
                    types.InlineKeyboardButton("💄 Room", callback_data="clue_letter"))
         bot.send_message(user_id, "Search location:", reply_markup=markup)
 
+    # Checking if a clue was selected
     elif call.data.startswith("clue_"):
         item = call.data[5:]
         clue_names = {"mask": "Mask", "timer": "Timer", "letter": "Note"}
@@ -127,13 +136,18 @@ def handle_query(call):
             "timer": "A professional timer. It caused the flickering. Expert work.",
             "letter": "Found by Azhar. Crude handwriting. 'Cancel the play at any cost'."
         }
+        # Creating the image path
         path = os.path.join(os.path.expanduser("~"), "Downloads", "detective_bot", f"{item}.jpg")
+        # Adding the clue to the player's collection
         if c_names[item] not in players[user_id]["clues"]:
             players[user_id]["clues"].append(c_names[item])
         if os.path.exists(path):
+             # Opening the image file
             with open(path, 'rb') as f:
+                # Sending the image
                 bot.send_photo(user_id, f, caption=f"🔍 Found: {c_names[item]}\n{c_texts[item]}")
         else:
+            # Error message if image is missing
             bot.send_message(user_id, f"🔍 Found: {c_names[item]}\n{c_texts[item]}\n\n⚠️ Image {item}.jpg not found.")
         show_main_menu(user_id)
 
@@ -155,10 +169,12 @@ def handle_query(call):
         for k, s in suspects.items(): markup.add(types.InlineKeyboardButton(f"Accuse: {s.name}", callback_data=f"fin_{k}"))
         bot.send_message(user_id, "Who is guilty?", reply_markup=markup)
 
+    # Checking final accusation buttons (final verdict stage)
     elif call.data.startswith("fin_"):
         k = call.data[4:]
         s = suspects[k]
-         
+        
+         # If the chosen suspect is actually guilty 
         if s.is_guilty:
             res = f"✅ *SOLVED! It was {s.name}! \n\n {s.final_truth} \n\n Others:* \n"
             for other_k, other_s in suspects.items():
@@ -168,7 +184,9 @@ def handle_query(call):
         else:
             bot.send_message(user_id, "❌ *WRONG!* The culprit managed to escape while you were accusing the innocent! Try again.")
 
+# Handler for the /start command
 @bot.message_handler(commands=['start'])
+# Function for starting the game
 def start(message):
     user_id = message.chat.id
     players[user_id] = {"clues": [], "interrogated": [], "round2": []}
@@ -183,6 +201,7 @@ def start(message):
         "You have until the evening, five suspects and three locations.\n\n"
         "👤 **What is your name, Detective?**"
     )
+    # Sending failure message
     bot.send_message(user_id, intro, parse_mode="Markdown")
     bot.register_next_step_handler(message, save_name)
 
