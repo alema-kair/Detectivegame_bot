@@ -24,12 +24,9 @@ This project is an interactive detective game Telegram bot created with Visual S
 ## How to Run
 
 1. Install Python
-
 2. Open terminal and write:
 "pip install pyTelegramBotAPI"
-
 3. Open 'main.py' and paste Telegram bot token
-
 4. Run the bot:
 "python main.py"
 
