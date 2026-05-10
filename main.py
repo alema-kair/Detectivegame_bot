@@ -7,8 +7,10 @@ import os
 TOKEN = "8719751151:AAG0B0YyKm45lp6iYXY1mrNnFkUu5d9rIMY"
 bot = telebot.TeleBot(TOKEN)
 
-try: bot.stop_polling()
-except: pass
+try:
+    bot.stop_polling()
+except:
+    pass
     
 # Dictionary for storing player data
 players = {}
